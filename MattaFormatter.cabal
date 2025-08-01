@@ -3,9 +3,9 @@ cabal-version:       2.2
 name:                MattaFormatter
 version:             0.1.0.0
 -- synopsis:
--- description:
+description:         “hold on” to your formatting — just 待った!✋
 homepage:            https://github.com/githubuser/MattaFormatter#readme
-license:             BSD-3-Clause
+license:             MIT
 license-file:        LICENSE
 author:              Ayato
 maintainer:          a.shiga73@gmail.com
