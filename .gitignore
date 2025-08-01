@@ -1,0 +1,34 @@
+# Haskell/Stack/Cabal
+.stack-work/
+dist/
+dist-newstyle/
+*.hi
+*.o
+*.dyn_hi
+*.dyn_o
+*.prof
+*.aux
+*.hp
+*.eventlog
+*.tix
+*.log
+*.out
+*.swp
+
+# VS Code
+.vscode/
+
+# MacOS
+.DS_Store
+
+# Others
+*.tmp
+*.bak
+*.old
+
+# Cabal sandbox
+cabal.sandbox.config
+cabal.sandbox/
+
+# Local environment
+.env
