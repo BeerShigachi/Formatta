@@ -1,6 +1,6 @@
 cabal-version:       2.2
 
-name:                MattaFormatter
+name:                Formatta
 version:             0.1.0.0
 description:         “hold on” to your formatting — just 待った!✋
 homepage:            https://github.com/githubuser/MattaFormatter#readme
@@ -11,7 +11,7 @@ copyright:           2025 Ayato
 category:            Tools
 build-type:          Simple
 
-executable MattaFormatter
+executable Formatta
   hs-source-dirs:      src
   main-is:             Main.hs
   default-language:    Haskell2010
