@@ -1,4 +1,6 @@
 import Formatta (toggleFormatOnSave)
 
 main :: IO ()
-main = putStrLn (toggleFormatOnSave "true")
+main = do
+  input <- getLine
+  putStrLn $ toggleFormatOnSave input
