@@ -1,0 +1,22 @@
+name: formatta
+version: 0.1.0.0
+github: BeerShigachi/Formatta
+license: MIT
+description: VSCode extension backend for toggling format on save
+category: Development Tools
+author: BeerShigachi
+maintainer: BeerShigachi <a.shiga73@gmail.com>
+library:
+  source-dirs: cli
+  exposed-modules:
+    - Commands.Help
+    - Commands.Toggle
+  dependencies:
+    - base
+
+executable:
+  main: Main.hs
+  source-dirs: cli
+  dependencies:
+    - formatta
+    - base

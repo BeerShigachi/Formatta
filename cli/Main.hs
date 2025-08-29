@@ -1,4 +1,5 @@
-import Formatta (toggleFormatOnSave)
+import Commands.Help (showHelp, showInvalidCommandMessage)
+import Commands.Toggle (toggleFormatOnSave)
 import System.Environment (getArgs)
 
 main :: IO ()

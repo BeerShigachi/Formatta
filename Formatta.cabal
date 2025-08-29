@@ -1,17 +1,45 @@
-cabal-version:       3.0
-name:                formatta
-version:             0.1.0.0
-build-type:          Simple
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.38.1.
+--
+-- see: https://github.com/sol/hpack
+
+name:           formatta
+version:        0.1.0.0
+description:    VSCode extension backend for toggling format on save
+category:       Development Tools
+homepage:       https://github.com/BeerShigachi/Formatta#readme
+bug-reports:    https://github.com/BeerShigachi/Formatta/issues
+author:         BeerShigachi
+maintainer:     BeerShigachi <a.shiga73@gmail.com>
+license:        MIT
+license-file:   LICENSE
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/BeerShigachi/Formatta
 
 library
-  exposed-modules:     Formatta
-  build-depends:       base >=4.7 && <5
-  default-language:    Haskell2010
-  hs-source-dirs:      hs-core
+  exposed-modules:
+      Commands.Help
+      Commands.Toggle
+  other-modules:
+      Main
+      Paths_formatta
+  hs-source-dirs:
+      cli
+  build-depends:
+      base
+  default-language: Haskell2010
 
 executable formatta
-  main-is:             Main.hs
-  build-depends:       base >=4.7 && <5
-  default-language:    Haskell2010
-  hs-source-dirs:      cli hs-core
-  other-modules:       Formatta
+  main-is: Main.hs
+  other-modules:
+      Paths_formatta
+  hs-source-dirs:
+      cli
+  build-depends:
+      base
+    , formatta
+  default-language: Haskell2010

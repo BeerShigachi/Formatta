@@ -1,4 +1,4 @@
-module Formatta (toggleFormatOnSave) where
+module Commands.Toggle (toggleFormatOnSave) where
 
 import Data.Char (toLower)
 

@@ -3,12 +3,11 @@
 # Some commonly used options have been documented as comments in this file.
 # For advanced use and comprehensive documentation of the format, please see:
 # https://docs.haskellstack.org/en/stable/configure/yaml/
-
 # A 'specific' Stackage snapshot or a compiler version.
 # A snapshot resolver dictates the compiler version and the set of packages
 # to be used for project dependencies. For example:
 #
-resolver: ghc-9.10.2
+resolver: lts-24.0
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
