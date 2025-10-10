@@ -36,7 +36,8 @@ library
 executable formatta
   main-is: Main.hs
   other-modules:
-      Paths_formatta
+      Commands.Help
+      Commands.Toggle
   hs-source-dirs:
       cli
   build-depends:

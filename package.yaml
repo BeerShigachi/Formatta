@@ -17,6 +17,9 @@ library:
 executable:
   main: Main.hs
   source-dirs: cli
+  other-modules:
+    - Commands.Help
+    - Commands.Toggle
   dependencies:
     - formatta
     - base
