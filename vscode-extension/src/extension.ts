@@ -1,9 +1,39 @@
 import * as vscode from "vscode";
 import { execFile } from "child_process";
 import * as path from "path";
-import { fold, Some } from "./helper/monad";
+import { Some, fold } from "./helper/monad";
+
+type StatusConfig = { icon: string; color: string };
+const STATUS_CONFIG: Record<string, StatusConfig> = {
+  play: { icon: "$(play) Formatta", color: "" },
+  pause: { icon: "$(debug-pause) Formatta", color: "orange" },
+};
+
+const updateStatusBarIcon = (
+  item: vscode.StatusBarItem,
+  isFormatOnSave: boolean
+) => {
+  const configOpt = isFormatOnSave
+    ? STATUS_CONFIG["play"]
+    : STATUS_CONFIG["pause"];
+  item.text = configOpt.icon;
+  item.color = configOpt.color;
+};
 
 export function activate(context: vscode.ExtensionContext) {
+  const statusBarItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Right,
+    100
+  );
+  const initial = vscode.workspace
+    .getConfiguration("editor")
+    .get("formatOnSave");
+  updateStatusBarIcon(statusBarItem, Boolean(initial));
+  statusBarItem.command = "formatta.toggleFormatOnSave";
+  statusBarItem.tooltip = "Toggle Format On Save";
+  statusBarItem.show();
+  context.subscriptions.push(statusBarItem);
+
   const excutablePath = path.join(context.extensionPath, "bin", "Formatta");
   const registerCommand =
     (context: vscode.ExtensionContext) =>
@@ -15,13 +45,14 @@ export function activate(context: vscode.ExtensionContext) {
 
   const handleCliResult = (output: string) => {
     const result = { true: true, false: false }[output.trim()];
-    return result
+    return result !== undefined
       ? () => {
           vscode.workspace
             .getConfiguration("editor")
             .update("formatOnSave", result, vscode.ConfigurationTarget.Global);
+          updateStatusBarIcon(statusBarItem, result);
           vscode.window.showInformationMessage(
-            `Format On Save set to: ${result}`
+            `Format On Save: ${result ? "Enabled" : "Disabled"}`
           );
         }
       : () => {
