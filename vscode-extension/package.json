@@ -1,0 +1,31 @@
+{
+    "name": "formatta",
+    "displayName": "Formatta",
+    "description": "Toggle VS Code format-on-save using a Haskell CLI backend.",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.70.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "formatta.toggleFormatOnSave",
+                "title": "Toggle Format On Save"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./"
+    },
+    "devDependencies": {
+        "@types/node": "^20.19.9",
+        "@types/vscode": "^1.70.0",
+        "typescript": "^5.0.0"
+    }
+}
