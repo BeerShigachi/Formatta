@@ -1,15 +1,7 @@
 import * as vscode from "vscode";
 import { execFile } from "child_process";
 import * as path from "path";
-
-type Option<T> = { tag: "Some"; value: T } | { tag: "None" };
-const Some = <T>(value: T): Option<T> => ({ tag: "Some", value });
-const None: Option<never> = { tag: "None" };
-const fold = <T>(
-  opt: Option<T>,
-  onNone: () => void,
-  onSome: (value: T) => void
-) => (opt.tag === "Some" ? onSome(opt.value) : onNone());
+import { fold, Some } from "./helper/monad";
 
 export function activate(context: vscode.ExtensionContext) {
   const excutablePath = path.join(context.extensionPath, "bin", "Formatta");
