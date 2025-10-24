@@ -12,9 +12,8 @@ Formatta adds a convenient button to your status bar, letting you enable or disa
 
 ## Install
 
-1. Go to the VS Code Marketplace.
-2. Search for "Formatta".
-3. Click on the "Install" button.
+1. Go to [the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BeerShigachi.formatta).
+2. Click on the "Install" button.
 
 ## Usage
 
