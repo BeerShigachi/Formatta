@@ -27,6 +27,7 @@ build/
 *.js
 *.js.map
 *.tsbuildinfo
+*.vsix
 .vscode/
 coverage/
 
