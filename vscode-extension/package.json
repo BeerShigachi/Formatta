@@ -3,12 +3,17 @@
     "displayName": "Formatta",
     "description": "Toggle VS Code format-on-save using a Haskell CLI backend.",
     "version": "0.0.1",
+    "license": "MIT",
     "engines": {
         "vscode": "^1.70.0"
     },
     "categories": [
         "Other"
     ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/BeerShigachi/Formatta.git"
+    },
     "main": "./out/extension.js",
     "contributes": {
         "commands": [
