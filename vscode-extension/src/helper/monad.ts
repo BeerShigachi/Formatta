@@ -4,5 +4,5 @@ export const None: Option<never> = { tag: "None" };
 export const fold = <T>(
   opt: Option<T>,
   onNone: () => void,
-  onSome: (value: T) => void,
+  onSome: (value: T) => void
 ) => (opt.tag === "Some" ? onSome(opt.value) : onNone());

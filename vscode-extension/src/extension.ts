@@ -7,12 +7,12 @@ type StatusConfig = { icon: string; color: string };
 
 const STATUS_CONFIG: Record<string, StatusConfig> = {
   play: { icon: "$(play) Formatta", color: "" },
-  pause: { icon: "$(debug-pause) Formatta", color: "orange" },
+  pause: { icon: "$(debug-pause) Formatta", color: "orange" }
 };
 
 const updateStatusBarIcon = (
   item: vscode.StatusBarItem,
-  isFormatOnSave: boolean,
+  isFormatOnSave: boolean
 ) => {
   const configOpt = isFormatOnSave
     ? STATUS_CONFIG["play"]
@@ -25,7 +25,7 @@ const updateStatusBarIcon = (
 export function activate(context: vscode.ExtensionContext) {
   const statusBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Right,
-    100,
+    100
   );
   const initial = vscode.workspace
     .getConfiguration("editor")
@@ -53,12 +53,12 @@ export function activate(context: vscode.ExtensionContext) {
             .update("formatOnSave", result, vscode.ConfigurationTarget.Global);
           updateStatusBarIcon(statusBarItem, result);
           vscode.window.showInformationMessage(
-            `Format On Save: ${result ? "Enabled" : "Paused"}`,
+            `Format On Save: ${result ? "Enabled" : "Paused"}`
           );
         }
       : () => {
           vscode.window.showErrorMessage(
-            "Formatta CLI returned invalid output: " + output.trim(),
+            "Formatta CLI returned invalid output: " + output.trim()
           );
         };
   };
@@ -66,9 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
   const handleExecResult = (error: Error | null, stdout: string) =>
     error
       ? Some(() =>
-          vscode.window.showErrorMessage(
-            "Formatta CLI error: " + error.message,
-          ),
+          vscode.window.showErrorMessage("Formatta CLI error: " + error.message)
         )
       : Some(handleCliResult(stdout));
 
@@ -83,9 +81,9 @@ export function activate(context: vscode.ExtensionContext) {
         fold(
           handleExecResult(error, stdout),
           () => {},
-          (fn) => fn(),
+          (fn) => fn()
         );
-      },
+      }
     );
   };
 
