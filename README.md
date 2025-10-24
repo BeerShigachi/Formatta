@@ -17,7 +17,3 @@ Formatta adds a convenient button to your status bar, letting you enable or disa
 - Click the button to toggle format-on-save on or off.
 - The icon and tooltip will update to show the current formatting status.
 - You can also use the command palette: search for "Toggle Format On Save".
-
-## License
-
-MIT
