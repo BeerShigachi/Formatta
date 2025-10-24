@@ -1,0 +1,19 @@
+# Exclude source maps and TypeScript sources
+src/**
+*.ts
+*.map
+
+# Exclude node_modules except production dependencies
+node_modules/**
+
+# Exclude build output except .js files
+out/**
+!out/**/*.js
+# Include the Haskell CLI binary
+!bin/formatta
+
+# Exclude config and test files
+.vscode/**
+test/**
+README.md
+CHANGELOG.md
