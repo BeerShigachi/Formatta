@@ -32,7 +32,7 @@
         "watch": "tsc -watch -p ./",
         "format": "prettier --write \"src/**/*.ts\"",
         "sync-docs": "cp ../README.md ../CHANGELOG.md .",
-        "package": "vsce package | npm run sync-docs"
+        "package": "vsce package && npm run sync-docs"
     },
     "devDependencies": {
         "@types/node": "^20.19.9",
