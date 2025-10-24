@@ -2,14 +2,21 @@
 
 "Hold on" to your formatting — just 待った!✋
 
-Formatta is a project to create a VS Code extension that lets you toggle the `editor.formatOnSave` setting with a single click.
-The extension will add a button to the VS Code top bar (next to Copilot) to quickly turn format-on-save on or off. Under the hood, it uses a Haskell CLI tool, wrapped by TypeScript, to perform the toggle.
+Formatta adds a convenient button to your status bar, letting you enable or disable format-on-save with a single click. Perfect for users who want fast, visual control over their editor’s formatting behavior.
+![Demo](./demo.gif)
 
-## Features
+## Install
 
-- VS Code extension with a top bar button to toggle format-on-save
-- Haskell CLI backend for robust settings manipulation
-- Open source (MIT License)
+1. Go to the VS Code Marketplace.
+2. Search for "Formatta".
+3. Click on the "Install" button.
+
+## Usage
+
+- After installation, you'll see a Formatta button in the VS Code status bar.
+- Click the button to toggle format-on-save on or off.
+- The icon and tooltip will update to show the current formatting status.
+- You can also use the command palette: search for "Toggle Format On Save".
 
 ## License
 
