@@ -5,6 +5,11 @@
 Formatta adds a convenient button to your status bar, letting you enable or disable format-on-save with a single click. Perfect for users who want fast, visual control over their editor’s formatting behavior.
 ![Demo](./media/demo.gif)
 
+## Requirements
+
+- **Supported OS:** macOS only
+- The extension includes a CLI binary built for macOS. Other platforms are not currently supported.
+
 ## Install
 
 1. Go to the VS Code Marketplace.
