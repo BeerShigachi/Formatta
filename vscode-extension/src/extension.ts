@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
   statusBarItem.show();
   context.subscriptions.push(statusBarItem);
 
-  const excutablePath = path.join(context.extensionPath, "bin", "Formatta");
+  const EXCUTABLE_PATH = path.join(context.extensionPath, "bin", "Formatta");
   const registerCommand =
     (context: vscode.ExtensionContext) =>
     (command: string) =>
@@ -74,7 +74,7 @@ export function activate(context: vscode.ExtensionContext) {
       .getConfiguration("editor")
       .get("formatOnSave");
     execFile(
-      excutablePath,
+      EXCUTABLE_PATH,
       ["toggle", String(current).toLowerCase()],
       (error, stdout, stderr) => {
         fold(
