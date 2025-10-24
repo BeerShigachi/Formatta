@@ -31,7 +31,8 @@
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
         "format": "prettier --write \"src/**/*.ts\"",
-        "sync-docs": "cp ../README.md ../CHANGELOG.md ."
+        "sync-docs": "cp ../README.md ../CHANGELOG.md .",
+        "package": "vsce package | npm run sync-docs"
     },
     "devDependencies": {
         "@types/node": "^20.19.9",
