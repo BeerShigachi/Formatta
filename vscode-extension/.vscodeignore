@@ -9,8 +9,12 @@ node_modules/**
 # Exclude build output except .js files
 out/**
 !out/**/*.js
+
 # Include the Haskell CLI binary
 !bin/formatta
+
+# Include the gif used in the README
+!vscode-extension/media/formatta.gif
 
 # Exclude config and test files
 .vscode/**
