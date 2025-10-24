@@ -30,7 +30,8 @@
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
-        "format": "prettier --write \"src/**/*.ts\""
+        "format": "prettier --write \"src/**/*.ts\"",
+        "sync-docs": "cp ../README.md ../CHANGELOG.md ."
     },
     "devDependencies": {
         "@types/node": "^20.19.9",

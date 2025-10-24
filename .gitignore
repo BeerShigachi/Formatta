@@ -31,6 +31,10 @@ build/
 .vscode/
 coverage/
 
+# Documentation for package
+vscode-extension/CHANGELOG.md
+vscode-extension/README.md
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
