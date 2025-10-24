@@ -34,6 +34,7 @@ coverage/
 # Documentation for package
 vscode-extension/CHANGELOG.md
 vscode-extension/README.md
+vscode-extension/LICENSE
 
 # Logs
 npm-debug.log*
