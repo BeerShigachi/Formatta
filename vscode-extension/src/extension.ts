@@ -18,6 +18,7 @@ const updateStatusBarIcon = (
     : STATUS_CONFIG["pause"];
   item.text = configOpt.icon;
   item.color = configOpt.color;
+  item.tooltip = isFormatOnSave ? "Formatting: Enabled" : "Formatting: Paused";
 };
 
 export function activate(context: vscode.ExtensionContext) {
@@ -30,7 +31,6 @@ export function activate(context: vscode.ExtensionContext) {
     .get("formatOnSave");
   updateStatusBarIcon(statusBarItem, Boolean(initial));
   statusBarItem.command = "formatta.toggleFormatOnSave";
-  statusBarItem.tooltip = "Toggle Format On Save";
   statusBarItem.show();
   context.subscriptions.push(statusBarItem);
 
@@ -52,7 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
             .update("formatOnSave", result, vscode.ConfigurationTarget.Global);
           updateStatusBarIcon(statusBarItem, result);
           vscode.window.showInformationMessage(
-            `Format On Save: ${result ? "Enabled" : "Disabled"}`
+            `Format On Save: ${result ? "Enabled" : "Paused"}`
           );
         }
       : () => {
