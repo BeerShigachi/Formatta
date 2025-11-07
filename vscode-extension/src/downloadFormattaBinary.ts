@@ -4,7 +4,17 @@ import * as fs from "fs";
 import fetch from "node-fetch";
 import { createHash } from "crypto";
 import * as vscode from "vscode";
-import { Maybe, Just, Nothing, maybe, fmap } from "./helper/monad";
+import {
+  Maybe,
+  Just,
+  Nothing,
+  maybe,
+  fmap,
+  Either,
+  Ok,
+  Err,
+  either
+} from "./helper/monad";
 
 const releaseBase =
   "https://github.com/BeerShigachi/Formatta/releases/latest/download";
@@ -36,12 +46,18 @@ const fetchToFile = (url: string, filePath: string) =>
 const maybeFile = (filePath: string): Maybe<string> =>
   fs.existsSync(filePath) ? Just(filePath) : Nothing;
 
-const fetchText = (url: string) =>
-  fetch(url).then((res) =>
-    !res.ok
-      ? Promise.reject(new Error(`Failed to fetch: ${res.statusText}`))
-      : res.text()
-  );
+const fetchText = (url: string): Promise<Either<string, string>> =>
+  fetch(url)
+    .then((res) =>
+      res.ok
+        ? res.text().then((text) => Ok<string, string>(text))
+        : Promise.resolve(
+            Err<string, string>(`Failed to fetch: ${res.statusText}`)
+          )
+    )
+    .catch((e) =>
+      Err<string, string>(e?.message || "Unknown error in fetchText")
+    );
 
 const sha256 = (filePath: string) =>
   createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
@@ -82,10 +98,17 @@ export async function downloadFormattaBinary(
     );
 
   await ensureDownloaded();
-  const [expectedHash, actualHash] = await Promise.all([
-    fetchText(hashUrl).then((h) => h.trim()),
+  const [expectedHashResult, actualHash] = await Promise.all([
+    fetchText(hashUrl),
     Promise.resolve(sha256(binPath))
   ]);
+  const expectedHash = either(
+    (err) => {
+      throw new Error(`Failed to fetch hash: ${err}`);
+    },
+    (h) => h.trim(),
+    expectedHashResult
+  );
   if (actualHash !== expectedHash) {
     fs.unlinkSync(binPath);
     throw new Error("Downloaded binary failed hash check and was deleted.");
