@@ -80,7 +80,7 @@ export function activate(context: vscode.ExtensionContext) {
       (error, stdout, stderr) => {
         fold(
           handleExecResult(error, stdout),
-          () => {},
+          () => undefined,
           (fn) => fn()
         );
       }

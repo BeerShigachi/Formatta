@@ -1,8 +1,8 @@
-type Maybe<T> = { tag: "Just"; value: T } | { tag: "Nothing" };
+export type Maybe<T> = { tag: "Just"; value: T } | { tag: "Nothing" };
 export const Just = <T>(value: T): Maybe<T> => ({ tag: "Just", value });
 export const Nothing: Maybe<never> = { tag: "Nothing" };
-export const fold = <T>(
+export const fold = <T, R>(
   m: Maybe<T>,
-  onNothing: () => void,
-  onJust: (value: T) => void
-) => (m.tag === "Just" ? onJust(m.value) : onNothing());
+  onNothing: () => R,
+  onJust: (value: T) => R
+): R => (m.tag === "Just" ? onJust(m.value) : onNothing());

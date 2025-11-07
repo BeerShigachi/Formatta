@@ -4,6 +4,7 @@ import * as fs from "fs";
 import fetch from "node-fetch";
 import { createHash } from "crypto";
 import * as vscode from "vscode";
+import { Maybe, Just, Nothing, fold } from "./helper/monad";
 
 const releaseBase =
   "https://github.com/BeerShigachi/Formatta/releases/latest/download";
@@ -14,11 +15,10 @@ const BIN_MAP: Record<string, string> = {
   linux: "formatta-linux"
 };
 
-const platformBinName = (platform: string): string =>
-  BIN_MAP[platform] ??
-  (() => {
-    throw new Error(`Unsupported platform: ${platform}`);
-  })();
+const platformBinName = (platform: string): Maybe<string> => {
+  const bin = BIN_MAP[platform];
+  return bin ? Just(bin) : Nothing;
+};
 
 const fetchToFile = (url: string, filePath: string) =>
   fetch(url).then((res) =>
@@ -47,7 +47,13 @@ export async function downloadFormattaBinary(
   context: vscode.ExtensionContext
 ): Promise<string> {
   const platform = os.platform();
-  const binName = platformBinName(platform);
+  const binName = fold(
+    platformBinName(platform),
+    () => {
+      throw new Error(`Unsupported platform: ${platform}`);
+    },
+    (name) => name
+  );
   const binPath = context.asAbsolutePath(path.join("bin", binName));
   const binUrl = `${releaseBase}/${binName}`;
   const hashUrl = `${binUrl}.sha256`;
