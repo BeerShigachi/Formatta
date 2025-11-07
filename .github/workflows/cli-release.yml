@@ -118,9 +118,18 @@ jobs:
         with:
           name: formatta-windows
           path: ./artifacts
+      - name: Rename macOS binary
+        run: mv ./artifacts/formatta ./artifacts/formatta-macos
+      - name: Rename Linux binary
+        run: mv ./artifacts/formatta ./artifacts/formatta-linux
+      - name: Rename Windows binary
+        run: mv ./artifacts/formatta.exe ./artifacts/formatta-windows.exe
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ./artifacts/**
+          files: |
+            ./artifacts/formatta-macos
+            ./artifacts/formatta-linux
+            ./artifacts/formatta-windows.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
