@@ -1,4 +1,4 @@
-name: Build and Release CLI Binaries
+name: Build CLI (macOS)
 
 on:
   workflow_dispatch:
@@ -7,11 +7,8 @@ on:
       - "v*"
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+  build-macos:
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - name: Cache Stack and GHC
@@ -20,9 +17,9 @@ jobs:
           path: |
             ~/.stack
             ~/.ghcup
-          key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml') }}-ghc-9.10.2
+          key: macos-stack-${{ hashFiles('stack.yaml') }}-ghc-9.10.2
           restore-keys: |
-            ${{ runner.os }}-stack-
+            macos-stack-
       - name: Set up Haskell (Stack)
         uses: haskell-actions/setup@v2
         with:
@@ -31,44 +28,13 @@ jobs:
           ghc-version: 9.10.2
           cabal-version: latest
           cabal-update: true
-      - name: Find and copy built binary
-        shell: bash
-        run: |
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            BIN=$(find .stack-work/dist -type f -name 'formatta.exe' | head -n1)
-            if [ -z "$BIN" ]; then echo "Windows binary not found!"; exit 1; fi
-            cp "$BIN" "formatta-windows.exe"
-            echo "BIN_OUT=formatta-windows.exe" >> $GITHUB_ENV
-          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            BIN=$(find .stack-work/dist -type f -name 'formatta' -perm /111 | head -n1)
-            if [ -z "$BIN" ]; then echo "macOS binary not found!"; exit 1; fi
-            cp "$BIN" "formatta-macos"
-            echo "BIN_OUT=formatta-macos" >> $GITHUB_ENV
-          else
-            BIN=$(find .stack-work/dist -type f -name 'formatta' -perm /111 | head -n1)
-            if [ -z "$BIN" ]; then echo "Linux binary not found!"; exit 1; fi
-            cp "$BIN" "formatta-linux"
-            echo "BIN_OUT=formatta-linux" >> $GITHUB_ENV
-          fi
 
-      - name: Upload binary artifact
+      - name: Build CLI
+        run: stack build
+
+      - name: Upload built binary (macOS)
         uses: actions/upload-artifact@v4
         with:
-          name: formatta-${{ matrix.os }}
-          path: ${{ env.BIN_OUT }}
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Download all build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: ./artifacts
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: ./artifacts/**/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: formatta-macos
+          path: |
+            $(find .stack-work -type f -name 'formatta' -perm /111 | head -n1)
