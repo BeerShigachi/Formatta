@@ -98,3 +98,29 @@ jobs:
         with:
           name: formatta-linux
           path: .stack-work/install/**/bin/formatta
+  release:
+    needs: [build-macos, build-linux, build-windows]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Download macOS binary
+        uses: actions/download-artifact@v4
+        with:
+          name: formatta-macos
+          path: ./artifacts
+      - name: Download Linux binary
+        uses: actions/download-artifact@v4
+        with:
+          name: formatta-linux
+          path: ./artifacts
+      - name: Download Windows binary
+        uses: actions/download-artifact@v4
+        with:
+          name: formatta-windows
+          path: ./artifacts
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./artifacts/**
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
