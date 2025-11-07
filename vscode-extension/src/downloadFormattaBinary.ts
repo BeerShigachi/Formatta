@@ -4,7 +4,7 @@ import * as fs from "fs";
 import fetch from "node-fetch";
 import { createHash } from "crypto";
 import * as vscode from "vscode";
-import { Maybe, Just, Nothing, fold } from "./helper/monad";
+import { Maybe, Just, Nothing, maybe, fmap } from "./helper/monad";
 
 const releaseBase =
   "https://github.com/BeerShigachi/Formatta/releases/latest/download";
@@ -33,6 +33,9 @@ const fetchToFile = (url: string, filePath: string) =>
         })
   );
 
+const maybeFile = (filePath: string): Maybe<string> =>
+  fs.existsSync(filePath) ? Just(filePath) : Nothing;
+
 const fetchText = (url: string) =>
   fetch(url).then((res) =>
     !res.ok
@@ -47,23 +50,36 @@ export async function downloadFormattaBinary(
   context: vscode.ExtensionContext
 ): Promise<string> {
   const platform = os.platform();
-  const binName = fold(
-    platformBinName(platform),
+  const binNameMaybe = platformBinName(platform);
+  const binPathMaybe = fmap(binNameMaybe, (name) =>
+    context.asAbsolutePath(path.join("bin", name))
+  );
+  const binName = maybe(
+    binNameMaybe,
     () => {
       throw new Error(`Unsupported platform: ${platform}`);
     },
     (name) => name
   );
-  const binPath = context.asAbsolutePath(path.join("bin", binName));
+  const binPath = maybe(
+    binPathMaybe,
+    () => {
+      throw new Error(`Unsupported platform: ${platform}`);
+    },
+    (p) => p
+  );
   const binUrl = `${releaseBase}/${binName}`;
   const hashUrl = `${binUrl}.sha256`;
 
   const ensureDownloaded = () =>
-    fs.existsSync(binPath)
-      ? Promise.resolve()
-      : vscode.window
-          .showInformationMessage(`Downloading ${binName}...`)
-          .then(() => fetchToFile(binUrl, binPath));
+    maybe(
+      maybeFile(binPath),
+      () =>
+        vscode.window
+          .showInformationMessage(`Downloading ${path.basename(binPath)}`)
+          .then(() => fetchToFile(binUrl, binPath)),
+      () => Promise.resolve()
+    );
 
   await ensureDownloaded();
   const [expectedHash, actualHash] = await Promise.all([

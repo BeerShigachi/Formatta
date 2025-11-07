@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { execFile } from "child_process";
 import * as path from "path";
-import { Just, fold } from "./helper/monad";
+import { Just, maybe } from "./helper/monad";
 
 type StatusConfig = { icon: string; color: string };
 
@@ -78,7 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
       EXCUTABLE_PATH,
       ["toggle", String(current).toLowerCase()],
       (error, stdout, stderr) => {
-        fold(
+        maybe(
           handleExecResult(error, stdout),
           () => undefined,
           (fn) => fn()
