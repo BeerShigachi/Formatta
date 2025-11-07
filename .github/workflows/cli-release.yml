@@ -11,12 +11,18 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Debug cache directories
+        run: |
+          echo "Listing C:\\ghcup:"
+          dir C:\\ghcup
+          echo "Listing C:\\hostedtoolcache\\windows\\stack:"
+          dir C:\\hostedtoolcache\\windows\\stack
       - name: Cache Stack and GHC
         uses: actions/cache@v4
         with:
           path: |
-            ${{ env.APPDATA }}\\stack
-            ${{ env.USERPROFILE }}\\.ghcup
+            C:\\ghcup
+            C:\\hostedtoolcache\\windows\\stack
           key: windows-stack-${{ hashFiles('stack.yaml') }}-ghc-9.10.2
           restore-keys: |
             windows-stack-
