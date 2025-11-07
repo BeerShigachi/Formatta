@@ -1,4 +1,4 @@
-name: Build CLI (macOS)
+name: Build CLI
 
 on:
   workflow_dispatch:
