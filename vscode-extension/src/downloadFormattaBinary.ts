@@ -30,18 +30,28 @@ const platformBinName = (platform: string): Maybe<string> => {
   return bin ? Just(bin) : Nothing;
 };
 
-const fetchToFile = (url: string, filePath: string) =>
-  fetch(url).then((res) =>
-    !res.ok
-      ? Promise.reject(new Error(`Failed to fetch: ${res.statusText}`))
-      : new Promise<void>((resolve, reject) => {
-          if (!res.body) return reject(new Error("No response body"));
-          const fileStream = fs.createWriteStream(filePath, { mode: 0o755 });
-          res.body.pipe(fileStream);
-          res.body.on("error", reject);
-          fileStream.on("finish", () => resolve());
-        })
-  );
+const fetchToFile = (
+  url: string,
+  filePath: string
+): Promise<Either<void, string>> =>
+  fetch(url)
+    .then((res) =>
+      res.ok && res.body
+        ? new Promise<Either<void, string>>((resolve) => {
+            const fileStream = fs.createWriteStream(filePath, { mode: 0o755 });
+            res.body?.pipe(fileStream);
+            res.body?.on("error", () => resolve(Err("Stream error")));
+            fileStream.on("finish", () => resolve(Ok(undefined)));
+          })
+        : Promise.resolve(
+            Err(
+              !res.ok
+                ? `Failed to fetch: ${res.statusText}`
+                : "No response body"
+            )
+          )
+    )
+    .catch((e) => Err(e?.message || "Unknown error in fetchToFile"));
 
 const maybeFile = (filePath: string): Maybe<string> =>
   fs.existsSync(filePath) ? Just(filePath) : Nothing;
@@ -70,48 +80,48 @@ export async function downloadFormattaBinary(
   const binPathMaybe = fmap(binNameMaybe, (name) =>
     context.asAbsolutePath(path.join("bin", name))
   );
-  const binName = maybe(
-    binNameMaybe,
-    () => {
-      throw new Error(`Unsupported platform: ${platform}`);
-    },
-    (name) => name
-  );
-  const binPath = maybe(
-    binPathMaybe,
-    () => {
-      throw new Error(`Unsupported platform: ${platform}`);
-    },
-    (p) => p
-  );
+  const binName = maybe<string, string>(() => {
+    throw new Error(`Unsupported platform: ${platform}`);
+  })((name) => name)(binNameMaybe);
+  const binPath = maybe<string, string>(() => {
+    throw new Error(`Unsupported platform: ${platform}`);
+  })((p) => p)(binPathMaybe);
   const binUrl = `${releaseBase}/${binName}`;
   const hashUrl = `${binUrl}.sha256`;
 
   const ensureDownloaded = () =>
-    maybe(
-      maybeFile(binPath),
-      () =>
+    maybe<string, Promise<Either<void, string>>>(() =>
+      Promise.resolve(
         vscode.window
           .showInformationMessage(`Downloading ${path.basename(binPath)}`)
-          .then(() => fetchToFile(binUrl, binPath)),
-      () => Promise.resolve()
-    );
+          .then(() => fetchToFile(binUrl, binPath))
+      )
+    )(() => Promise.resolve(Ok(undefined)))(maybeFile(binPath));
 
   await ensureDownloaded();
   const [expectedHashResult, actualHash] = await Promise.all([
     fetchText(hashUrl),
     Promise.resolve(sha256(binPath))
   ]);
-  const expectedHash = either(
-    (err) => {
-      throw new Error(`Failed to fetch hash: ${err}`);
-    },
-    (h) => h.trim(),
-    expectedHashResult
+
+  const throwError = (prefix: string) => (err: string) => {
+    throw new Error(`${prefix}${err}`);
+  };
+  const checkHash = (expected: string, actual: string, path: string) =>
+    actual === expected
+      ? Ok<string, string>(path)
+      : (fs.unlinkSync(path),
+        Err<string, string>(
+          "Downloaded binary failed hash check and was deleted."
+        ));
+
+  return either<string, string, string>(throwError(""))((p) => p)(
+    checkHash(
+      either<string, string, string>(throwError("Failed to fetch hash: "))(
+        (h) => h.trim()
+      )(expectedHashResult),
+      actualHash,
+      binPath
+    )
   );
-  if (actualHash !== expectedHash) {
-    fs.unlinkSync(binPath);
-    throw new Error("Downloaded binary failed hash check and was deleted.");
-  }
-  return binPath;
 }

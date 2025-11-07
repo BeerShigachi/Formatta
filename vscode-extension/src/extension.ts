@@ -78,10 +78,8 @@ export function activate(context: vscode.ExtensionContext) {
       EXCUTABLE_PATH,
       ["toggle", String(current).toLowerCase()],
       (error, stdout, stderr) => {
-        maybe(
-          handleExecResult(error, stdout),
-          () => undefined,
-          (fn) => fn()
+        maybe<() => void, void>(() => undefined)((fn) => fn())(
+          handleExecResult(error, stdout)
         );
       }
     );

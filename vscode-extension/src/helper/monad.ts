@@ -16,16 +16,16 @@ export const Err = <E, T = never>(error: E): Either<T, E> => ({
 });
 
 // Algebraic data types (ADTs) operations
-export const maybe = <T, R>(
-  m: Maybe<T>,
-  onNothing: () => R,
-  onJust: (value: T) => R
-): R => (m.tag === "Just" ? onJust(m.value) : onNothing());
+export const maybe =
+  <T, R>(onNothing: () => R) =>
+  (onJust: (value: T) => R) =>
+  (m: Maybe<T>): R =>
+    m.tag === "Just" ? onJust(m.value) : onNothing();
 export const fmap = <T, U>(m: Maybe<T>, fn: (value: T) => U): Maybe<U> =>
   m.tag === "Just" ? Just(fn(m.value)) : Nothing;
 
-export const either = <E, T, R>(
-  onLeft: (error: E) => R,
-  onRight: (value: T) => R,
-  e: Either<T, E>
-): R => (e.tag === "Ok" ? onRight(e.value) : onLeft(e.error));
+export const either =
+  <E, T, R>(onLeft: (error: E) => R) =>
+  (onRight: (value: T) => R) =>
+  (e: Either<T, E>): R =>
+    e.tag === "Ok" ? onRight(e.value) : onLeft(e.error);
