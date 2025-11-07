@@ -36,5 +36,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: formatta-macos
-          path: |
-            $(find .stack-work -type f -name 'formatta' -perm /111 | head -n1)
+          path: .stack-work/install/*/bin/formatta
