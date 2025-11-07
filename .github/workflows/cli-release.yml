@@ -7,6 +7,36 @@ on:
       - "v*"
 
 jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache Stack and GHC
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.stack
+            ~/.ghcup
+          key: windows-stack-${{ hashFiles('stack.yaml') }}-ghc-9.10.2
+          restore-keys: |
+            windows-stack-
+      - name: Set up Haskell (Stack)
+        uses: haskell-actions/setup@v2
+        with:
+          enable-stack: true
+          stack-version: latest
+          ghc-version: 9.10.2
+          cabal-version: latest
+          cabal-update: true
+
+      - name: Build CLI
+        run: stack build
+
+      - name: Upload built binary (Windows)
+        uses: actions/upload-artifact@v4
+        with:
+          name: formatta-windows
+          path: .stack-work/install/**/bin/formatta.exe
   build-macos:
     runs-on: macos-latest
     steps:
