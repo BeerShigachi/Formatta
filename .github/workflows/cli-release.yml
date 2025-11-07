@@ -53,6 +53,7 @@ jobs:
           path: |
             ~/.stack
             ~/.ghcup
+            .stack-work
           key: macos-stack-${{ hashFiles('stack.yaml') }}-ghc-9.10.2
           restore-keys: |
             macos-stack-
@@ -84,6 +85,7 @@ jobs:
           path: |
             ~/.stack
             ~/.ghcup
+            .stack-work
           key: linux-stack-${{ hashFiles('stack.yaml') }}-ghc-9.10.2
           restore-keys: |
             linux-stack-
