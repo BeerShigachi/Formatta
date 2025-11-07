@@ -107,23 +107,23 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: formatta-macos
-          path: ./artifacts
+          path: ./artifacts/macos
       - name: Download Linux binary
         uses: actions/download-artifact@v4
         with:
           name: formatta-linux
-          path: ./artifacts
+          path: ./artifacts/linux
       - name: Download Windows binary
         uses: actions/download-artifact@v4
         with:
           name: formatta-windows
-          path: ./artifacts
+          path: ./artifacts/windows
       - name: Rename macOS binary
-        run: mv ./artifacts/formatta ./artifacts/formatta-macos
+        run: mv ./artifacts/macos/formatta ./artifacts/formatta-macos
       - name: Rename Linux binary
-        run: mv ./artifacts/formatta ./artifacts/formatta-linux
+        run: mv ./artifacts/linux/formatta ./artifacts/formatta-linux
       - name: Rename Windows binary
-        run: mv ./artifacts/formatta.exe ./artifacts/formatta-windows.exe
+        run: mv ./artifacts/windows/formatta.exe ./artifacts/formatta-windows.exe
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
