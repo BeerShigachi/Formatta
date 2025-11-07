@@ -13,15 +13,14 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Haskell (Stack)
-        - uses: haskell-actions/setup@v2
-          with:
-            enable-stack: true
-            stack-version: latest
-            ghc-version: 9.10.2
-            cabal-version: latest
-            cabal-update: true
+        uses: haskell-actions/setup@v2
+        with:
+          enable-stack: true
+          stack-version: latest
+          ghc-version: 9.10.2
+          cabal-version: latest
+          cabal-update: true
       - name: Find and copy built binary
         shell: bash
         run: |
