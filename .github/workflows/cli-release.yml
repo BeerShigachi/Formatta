@@ -40,12 +40,12 @@ jobs:
             cp "$BIN" "formatta-windows.exe"
             echo "BIN_OUT=formatta-windows.exe" >> $GITHUB_ENV
           elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            BIN=$(find .stack-work/dist -type f -name 'formatta' -perm +111 | head -n1)
+            BIN=$(find .stack-work/dist -type f -name 'formatta' -perm /111 | head -n1)
             if [ -z "$BIN" ]; then echo "macOS binary not found!"; exit 1; fi
             cp "$BIN" "formatta-macos"
             echo "BIN_OUT=formatta-macos" >> $GITHUB_ENV
           else
-            BIN=$(find .stack-work/dist -type f -name 'formatta' -perm +111 | head -n1)
+            BIN=$(find .stack-work/dist -type f -name 'formatta' -perm /111 | head -n1)
             if [ -z "$BIN" ]; then echo "Linux binary not found!"; exit 1; fi
             cp "$BIN" "formatta-linux"
             echo "BIN_OUT=formatta-linux" >> $GITHUB_ENV
