@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { execFile } from "child_process";
 import * as path from "path";
-import { Some, fold } from "./helper/monad";
+import { Just, fold } from "./helper/monad";
 
 type StatusConfig = { icon: string; color: string };
 
@@ -65,10 +65,10 @@ export function activate(context: vscode.ExtensionContext) {
 
   const handleExecResult = (error: Error | null, stdout: string) =>
     error
-      ? Some(() =>
+      ? Just(() =>
           vscode.window.showErrorMessage("Formatta CLI error: " + error.message)
         )
-      : Some(handleCliResult(stdout));
+      : Just(handleCliResult(stdout));
 
   const formatOnSaveHandler = () => {
     const current = vscode.workspace
