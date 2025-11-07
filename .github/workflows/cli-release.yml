@@ -37,3 +37,34 @@ jobs:
         with:
           name: formatta-macos
           path: .stack-work/install/**/bin/formatta
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache Stack and GHC
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.stack
+            ~/.ghcup
+          key: linux-stack-${{ hashFiles('stack.yaml') }}-ghc-9.10.2
+          restore-keys: |
+            linux-stack-
+      - name: Set up Haskell (Stack)
+        uses: haskell-actions/setup@v2
+        with:
+          enable-stack: true
+          stack-version: latest
+          ghc-version: 9.10.2
+          cabal-version: latest
+          cabal-update: true
+
+      - name: Build CLI
+        run: stack build
+
+      - name: Upload built binary (Linux)
+        uses: actions/upload-artifact@v4
+        with:
+          name: formatta-linux
+          path: .stack-work/install/**/bin/formatta
