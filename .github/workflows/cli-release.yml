@@ -1,0 +1,65 @@
+name: Build and Release CLI Binaries
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Haskell (Stack)
+        uses: haskell/actions/setup@v2
+        with:
+          enable-stack: true
+
+      - name: Build CLI with Stack
+        run: stack build
+
+      - name: Find and copy built binary
+        shell: bash
+        run: |
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            BIN=$(find .stack-work/dist -type f -name 'formatta.exe' | head -n1)
+            if [ -z "$BIN" ]; then echo "Windows binary not found!"; exit 1; fi
+            cp "$BIN" "formatta-windows.exe"
+            echo "BIN_OUT=formatta-windows.exe" >> $GITHUB_ENV
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            BIN=$(find .stack-work/dist -type f -name 'formatta' -perm +111 | head -n1)
+            if [ -z "$BIN" ]; then echo "macOS binary not found!"; exit 1; fi
+            cp "$BIN" "formatta-macos"
+            echo "BIN_OUT=formatta-macos" >> $GITHUB_ENV
+          else
+            BIN=$(find .stack-work/dist -type f -name 'formatta' -perm +111 | head -n1)
+            if [ -z "$BIN" ]; then echo "Linux binary not found!"; exit 1; fi
+            cp "$BIN" "formatta-linux"
+            echo "BIN_OUT=formatta-linux" >> $GITHUB_ENV
+          fi
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: formatta-${{ matrix.os }}
+          path: ${{ env.BIN_OUT }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./artifacts/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
