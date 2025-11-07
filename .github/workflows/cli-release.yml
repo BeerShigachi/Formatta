@@ -118,6 +118,12 @@ jobs:
         with:
           name: formatta-windows
           path: ./artifacts/windows
+      - name: List files in macos artifact
+        run: ls -R ./artifacts/macos
+      - name: List files in linux artifact
+        run: ls -R ./artifacts/linux
+      - name: List files in windows artifact
+        run: ls -R ./artifacts/windows
       - name: Rename macOS binary
         run: mv ./artifacts/macos/formatta ./artifacts/formatta-macos
       - name: Rename Linux binary
