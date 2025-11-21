@@ -7,8 +7,9 @@ Formatta adds a convenient button to your status bar, letting you enable or disa
 
 ## Requirements
 
-- **Supported OS:** macOS only
-- The extension includes a CLI binary built for macOS. Other platforms are not currently supported.
+- macOS (Apple Silicon & Intel)
+- Linux (x64)
+- Windows (x64)
 
 ## Install
 
