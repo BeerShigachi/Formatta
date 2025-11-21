@@ -38,6 +38,9 @@ jobs:
       - name: Build CLI
         run: stack build
 
+      - name: List built files
+        run: ls -R .stack-work/install
+
       - name: Upload built binary (Windows)
         uses: actions/upload-artifact@v4
         with:
@@ -68,6 +71,9 @@ jobs:
 
       - name: Build CLI
         run: stack build
+
+      - name: List built files
+        run: ls -R .stack-work/install
 
       - name: Upload built binary (macOS)
         uses: actions/upload-artifact@v4
@@ -101,6 +107,9 @@ jobs:
       - name: Build CLI
         run: stack build
 
+      - name: List built files
+        run: ls -R .stack-work/install
+
       - name: Upload built binary (Linux)
         uses: actions/upload-artifact@v4
         with:
@@ -130,8 +139,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ./artifacts/formatta-macos
-            ./artifacts/formatta-linux
-            ./artifacts/formatta-windows.exe
+            ./artifacts/macos/formatta
+            ./artifacts/linux/formatta
+            ./artifacts/windows/formatta.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
