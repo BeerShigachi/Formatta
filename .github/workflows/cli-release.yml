@@ -145,8 +145,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ./artifacts/macos/*
-            ./artifacts/linux/*
-            ./artifacts/windows/*
+            ./artifacts/macos/**/formatta
+            ./artifacts/linux/**/formatta
+            ./artifacts/windows/**/formatta.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
