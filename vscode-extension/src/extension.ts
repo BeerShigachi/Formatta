@@ -1,6 +1,9 @@
 import * as vscode from "vscode";
 import { execFile } from "child_process";
-import * as path from "path";
+import {
+  downloadFormattaBinary,
+  getFormattaBinaryPath
+} from "./downloadFormattaBinary";
 import { Just, maybe } from "./helper/monad";
 
 type StatusConfig = { icon: string; color: string };
@@ -23,6 +26,18 @@ const updateStatusBarIcon = (
 };
 
 export function activate(context: vscode.ExtensionContext) {
+  // Download binary on activation
+  downloadFormattaBinary(context)
+    .then(() => {
+      vscode.window.showInformationMessage(
+        "Formatta binary downloaded and ready."
+      );
+    })
+    .catch((err) => {
+      vscode.window.showErrorMessage(
+        "Failed to download Formatta binary: " + (err?.message || err)
+      );
+    });
   const statusBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Right,
     100
@@ -35,7 +50,6 @@ export function activate(context: vscode.ExtensionContext) {
   statusBarItem.show();
   context.subscriptions.push(statusBarItem);
 
-  const EXCUTABLE_PATH = path.join(context.extensionPath, "bin", "Formatta");
   const registerCommand =
     (context: vscode.ExtensionContext) =>
     (command: string) =>
@@ -70,12 +84,13 @@ export function activate(context: vscode.ExtensionContext) {
         )
       : Just(handleCliResult(stdout));
 
-  const formatOnSaveHandler = () => {
+  async function formatOnSaveHandler() {
+    const excutablePath = getFormattaBinaryPath(context);
     const current = vscode.workspace
       .getConfiguration("editor")
       .get("formatOnSave");
     execFile(
-      EXCUTABLE_PATH,
+      excutablePath,
       ["toggle", String(current).toLowerCase()],
       (error, stdout, stderr) => {
         maybe<() => void, void>(() => undefined)((fn) => fn())(
@@ -83,7 +98,7 @@ export function activate(context: vscode.ExtensionContext) {
         );
       }
     );
-  };
+  }
 
   registerCommand(context)("formatta.toggleFormatOnSave")(formatOnSaveHandler);
 }

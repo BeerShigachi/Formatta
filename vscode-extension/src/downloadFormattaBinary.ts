@@ -72,21 +72,24 @@ const fetchText = (url: string): Promise<Either<string, string>> =>
 const sha256 = (filePath: string) =>
   createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
 
-export async function downloadFormattaBinary(
+export function getFormattaBinaryPath(
   context: vscode.ExtensionContext
-): Promise<string> {
+): string {
   const platform = os.platform();
   const binNameMaybe = platformBinName(platform);
   const binPathMaybe = fmap(binNameMaybe, (name) =>
-    context.asAbsolutePath(path.join("bin", name))
+    context.asAbsolutePath(name)
   );
-  const binName = maybe<string, string>(() => {
-    throw new Error(`Unsupported platform: ${platform}`);
-  })((name) => name)(binNameMaybe);
-
-  const binPath = maybe<string, string>(() => {
+  return maybe<string, string>(() => {
     throw new Error(`Unsupported platform: ${platform}`);
   })((p) => p)(binPathMaybe);
+}
+
+export async function downloadFormattaBinary(
+  context: vscode.ExtensionContext
+): Promise<string> {
+  const binPath = getFormattaBinaryPath(context);
+  const binName = path.basename(binPath);
   const binUrl = `${releaseBase}/${binName}`;
   const hashUrl = `${binUrl}.sha256`;
 
@@ -99,7 +102,17 @@ export async function downloadFormattaBinary(
       )
     )(() => Promise.resolve(Ok(undefined)))(maybeFile(binPath));
 
-  await ensureDownloaded();
+  // refactor later to use monad operations
+  const downloadResult = await ensureDownloaded();
+  if (downloadResult.tag === "Ok") {
+    vscode.window.showInformationMessage(
+      `Formatta binary downloaded: ${binPath}`
+    );
+  } else {
+    vscode.window.showErrorMessage(
+      `Failed to download Formatta binary: ${downloadResult.error ?? "Unknown error"}`
+    );
+  }
   const [expectedHashResult, actualHash] = await Promise.all([
     fetchText(hashUrl),
     Promise.resolve(sha256(binPath))

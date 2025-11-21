@@ -3,8 +3,9 @@ src/**
 *.ts
 *.map
 
-# Exclude node_modules except production dependencies
-node_modules/**
+node_modules/*
+# Bundle node-fetch module to download Haskell CLI
+!node_modules/node-fetch/**
 
 # Exclude build output except .js files
 out/**
