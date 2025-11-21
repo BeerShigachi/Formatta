@@ -115,10 +115,11 @@ jobs:
         with:
           name: formatta-linux
           path: .stack-work/install/**/bin/formatta
+
   release:
     needs: [build-macos, build-linux, build-windows]
     runs-on: ubuntu-latest
-    # if: startsWith(github.ref, 'refs/tags/v')
+    if: github.ref_type == 'tag'
     steps:
       - name: Download macOS binary
         uses: actions/download-artifact@v4
@@ -135,24 +136,12 @@ jobs:
         with:
           name: formatta-windows
           path: ./artifacts/windows
-
-      - name: Move macOS binary
-        run: |
-          mv $(find ./artifacts/macos -type f -name 'formatta') ./artifacts/macos/formatta
-      - name: Move Linux binary
-        run: |
-          mv $(find ./artifacts/linux -type f -name 'formatta') ./artifacts/linux/formatta
-      - name: Move Windows binary
-        run: |
-          mv $(find ./artifacts/windows -type f -name 'formatta.exe') ./artifacts/windows/formatta.exe
-      - name: List all artifacts
-        run: ls -lR ./artifacts
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ./artifacts/macos/formatta
-            ./artifacts/linux/formatta
-            ./artifacts/windows/formatta.exe
+            ./artifacts/macos/*
+            ./artifacts/linux/*
+            ./artifacts/windows/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
