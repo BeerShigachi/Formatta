@@ -135,6 +135,18 @@ jobs:
         with:
           name: formatta-windows
           path: ./artifacts/windows
+
+      - name: Move macOS binary
+        run: |
+          mv $(find ./artifacts/macos -type f -name 'formatta') ./artifacts/macos/formatta
+      - name: Move Linux binary
+        run: |
+          mv $(find ./artifacts/linux -type f -name 'formatta') ./artifacts/linux/formatta
+      - name: Move Windows binary
+        run: |
+          mv $(find ./artifacts/windows -type f -name 'formatta.exe') ./artifacts/windows/formatta.exe
+      - name: List all artifacts
+        run: ls -lR ./artifacts
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
