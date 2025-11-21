@@ -83,6 +83,7 @@ export async function downloadFormattaBinary(
   const binName = maybe<string, string>(() => {
     throw new Error(`Unsupported platform: ${platform}`);
   })((name) => name)(binNameMaybe);
+
   const binPath = maybe<string, string>(() => {
     throw new Error(`Unsupported platform: ${platform}`);
   })((p) => p)(binPathMaybe);
