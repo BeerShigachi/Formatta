@@ -141,6 +141,15 @@ jobs:
           echo "macOS files:" && ls -lR ./artifacts/macos || true
           echo "Linux files:" && ls -lR ./artifacts/linux || true
           echo "Windows files:" && ls -lR ./artifacts/windows || true
+      - name: Rename macOS binary
+        run: |
+          mv $(find ./artifacts/macos -type f -name 'formatta') ./artifacts/macos/formatta-macos || true
+      - name: Rename Linux binary
+        run: |
+          mv $(find ./artifacts/linux -type f -name 'formatta') ./artifacts/linux/formatta-linux || true
+      - name: Rename Windows binary
+        run: |
+          mv $(find ./artifacts/windows -type f -name 'formatta.exe') ./artifacts/windows/formatta-windows.exe || true
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
