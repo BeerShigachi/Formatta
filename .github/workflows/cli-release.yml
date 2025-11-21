@@ -145,6 +145,15 @@ jobs:
       - name: Rename Windows binary
         run: |
           mv $(find ./artifacts/windows -type f -name 'formatta.exe') ./artifacts/windows/formatta-windows.exe || true
+      - name: Generate SHA256 hash for macOS binary
+        run: |
+          shasum -a 256 ./artifacts/macos/formatta-macos | awk '{print $1}' > ./artifacts/macos/formatta-macos.sha256
+      - name: Generate SHA256 hash for Linux binary
+        run: |
+          shasum -a 256 ./artifacts/linux/formatta-linux | awk '{print $1}' > ./artifacts/linux/formatta-linux.sha256
+      - name: Generate SHA256 hash for Windows binary
+        run: |
+          shasum -a 256 ./artifacts/windows/formatta-windows.exe | awk '{print $1}' > ./artifacts/windows/formatta-windows.exe.sha256
       - name: List all artifact files (recursive)
         run: |
           echo "macOS files:" && ls -lR ./artifacts/macos || true
@@ -156,7 +165,10 @@ jobs:
         with:
           files: |
             ./artifacts/macos/**/formatta-macos
+            ./artifacts/macos/**/formatta-macos.sha256
             ./artifacts/linux/**/formatta-linux
+            ./artifacts/linux/**/formatta-linux.sha256
             ./artifacts/windows/**/formatta-windows.exe
+            ./artifacts/windows/**/formatta-windows.exe.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
