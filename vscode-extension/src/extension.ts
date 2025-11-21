@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { execFile } from "child_process";
 import {
-  downloadFormattaBinary,
+  downloadBinary,
   getFormattaBinaryPath
 } from "./downloadFormattaBinary";
 import { Just, maybe } from "./helper/monad";
@@ -27,7 +27,7 @@ const updateStatusBarIcon = (
 
 export function activate(context: vscode.ExtensionContext) {
   // Download binary on activation
-  downloadFormattaBinary(context)
+  downloadBinary(context)
     .then(() => {
       vscode.window.showInformationMessage(
         "Formatta binary downloaded and ready."

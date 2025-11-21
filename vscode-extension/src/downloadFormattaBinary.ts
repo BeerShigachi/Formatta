@@ -40,18 +40,18 @@ const fetchToFile = (
         ? new Promise<Either<void, string>>((resolve) => {
             const fileStream = fs.createWriteStream(filePath, { mode: 0o755 });
             res.body?.pipe(fileStream);
-            res.body?.on("error", () => resolve(Err("Stream error")));
-            fileStream.on("finish", () => resolve(Ok(undefined)));
+            res.body?.on("error", () => resolve(Err<string>("Stream error")));
+            fileStream.on("finish", () => resolve(Ok<void>(undefined)));
           })
         : Promise.resolve(
-            Err(
+            Err<string>(
               !res.ok
                 ? `Failed to fetch: ${res.statusText}`
                 : "No response body"
             )
           )
     )
-    .catch((e) => Err(e?.message || "Unknown error in fetchToFile"));
+    .catch((e) => Err<string>(e?.message || "Unknown error in fetchToFile"));
 
 const maybeFile = (filePath: string): Maybe<string> =>
   fs.existsSync(filePath) ? Just(filePath) : Nothing;
@@ -85,7 +85,7 @@ export function getFormattaBinaryPath(
   })((p) => p)(binPathMaybe);
 }
 
-export async function downloadFormattaBinary(
+export async function downloadBinary(
   context: vscode.ExtensionContext
 ): Promise<string> {
   const binPath = getFormattaBinaryPath(context);
@@ -102,17 +102,11 @@ export async function downloadFormattaBinary(
       )
     )(() => Promise.resolve(Ok(undefined)))(maybeFile(binPath));
 
-  // refactor later to use monad operations
   const downloadResult = await ensureDownloaded();
-  if (downloadResult.tag === "Ok") {
-    vscode.window.showInformationMessage(
-      `Formatta binary downloaded: ${binPath}`
-    );
-  } else {
-    vscode.window.showErrorMessage(
-      `Failed to download Formatta binary: ${downloadResult.error ?? "Unknown error"}`
-    );
-  }
+  either<string, void, void>((err) => onDownloadError(err))(() =>
+    onDownloadSuccess(binPath)
+  )(downloadResult);
+
   const [expectedHashResult, actualHash] = await Promise.all([
     fetchText(hashUrl),
     Promise.resolve(sha256(binPath))
@@ -137,5 +131,15 @@ export async function downloadFormattaBinary(
       actualHash,
       binPath
     )
+  );
+}
+
+function onDownloadError(err: string) {
+  vscode.window.showErrorMessage(`Failed to download Formatta binary: ${err}`);
+}
+
+function onDownloadSuccess(binPath: string) {
+  vscode.window.showInformationMessage(
+    `Formatta binary downloaded: ${binPath}`
   );
 }
