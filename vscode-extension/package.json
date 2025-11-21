@@ -17,6 +17,7 @@
         "url": "https://github.com/BeerShigachi/Formatta.git"
     },
     "main": "./out/extension.js",
+    "icon": "media/icon.png",
     "contributes": {
         "commands": [
             {
