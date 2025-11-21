@@ -136,27 +136,11 @@ jobs:
         with:
           name: formatta-windows
           path: ./artifacts/windows
-      - name: Unzip macOS artifact
+      - name: List all artifact files
         run: |
-          if ls ./artifacts/macos/*.zip 1> /dev/null 2>&1; then
-            unzip -o ./artifacts/macos/*.zip -d ./artifacts/macos
-          else
-            echo "No macOS ZIP file found to unzip."
-          fi
-      - name: Unzip Linux artifact
-        run: |
-          if ls ./artifacts/linux/*.zip 1> /dev/null 2>&1; then
-            unzip -o ./artifacts/linux/*.zip -d ./artifacts/linux
-          else
-            echo "No Linux ZIP file found to unzip."
-          fi
-      - name: Unzip Windows artifact
-        run: |
-          if ls ./artifacts/windows/*.zip 1> /dev/null 2>&1; then
-            unzip -o ./artifacts/windows/*.zip -d ./artifacts/windows
-          else
-            echo "No Windows ZIP file found to unzip."
-          fi
+          echo "macOS files:" && ls -l ./artifacts/macos || true
+          echo "Linux files:" && ls -l ./artifacts/linux || true
+          echo "Windows files:" && ls -l ./artifacts/windows || true
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
