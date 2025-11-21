@@ -136,11 +136,11 @@ jobs:
         with:
           name: formatta-windows
           path: ./artifacts/windows
-      - name: List all artifact files
+      - name: List all artifact files (recursive)
         run: |
-          echo "macOS files:" && ls -l ./artifacts/macos || true
-          echo "Linux files:" && ls -l ./artifacts/linux || true
-          echo "Windows files:" && ls -l ./artifacts/windows || true
+          echo "macOS files:" && ls -lR ./artifacts/macos || true
+          echo "Linux files:" && ls -lR ./artifacts/linux || true
+          echo "Windows files:" && ls -lR ./artifacts/windows || true
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
